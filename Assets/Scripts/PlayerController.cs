@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DeepSeaController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float swimSpeed = 15f;      // 수영 속도
