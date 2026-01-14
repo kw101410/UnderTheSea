@@ -17,7 +17,7 @@ RenderSettings:
   m_Fog: 1
   m_FogColor: {r: 0.10786757, g: 0.10786757, b: 0.2264151, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.05
+  m_FogDensity: 0.06
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.007843138, g: 0.007843138, b: 0.019607844, a: 1}
@@ -426,7 +426,7 @@ Terrain:
   m_Enabled: 1
   serializedVersion: 6
   m_TerrainData: {fileID: 15600000, guid: 83f43015d2fc69a4f869a098be5f80fa, type: 2}
-  m_TreeDistance: 5000
+  m_TreeDistance: 0
   m_TreeBillboardDistance: 50
   m_TreeCrossFadeLength: 5
   m_TreeMaximumFullLODCount: 50
@@ -585,8 +585,8 @@ Light:
   m_GameObject: {fileID: 1125476568}
   m_Enabled: 1
   serializedVersion: 11
-  m_Type: 0
-  m_Color: {r: 1, g: 0.967023, b: 0.8537736, a: 1}
+  m_Type: 1
+  m_Color: {r: 1, g: 0.63807106, b: 0.4764151, a: 1}
   m_Intensity: 70
   m_Range: 50
   m_SpotAngle: 58.17501
@@ -618,7 +618,7 @@ Light:
       e32: 0
       e33: 1
     m_UseCullingMatrixOverride: 0
-  m_Cookie: {fileID: 0}
+  m_Cookie: {fileID: 2800000, guid: 2cc31e63892b73b42a5dafebf524b3b5, type: 3}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
   m_RenderMode: 0
@@ -641,6 +641,79 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
+--- !u!1001 &1134121161
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 159700, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
+      propertyPath: m_Name
+      value: SardineSkinWithDemoScript
+      objectReference: {fileID: 0}
+    - target: {fileID: 412992, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 31.592
+      objectReference: {fileID: 0}
+    - target: {fileID: 412992, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 31.592
+      objectReference: {fileID: 0}
+    - target: {fileID: 412992, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 31.592
+      objectReference: {fileID: 0}
+    - target: {fileID: 412992, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 30.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 412992, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 412992, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 13.81
+      objectReference: {fileID: 0}
+    - target: {fileID: 412992, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 412992, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 412992, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 412992, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 412992, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 412992, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 412992, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5436492, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
+      propertyPath: m_Constraints
+      value: 4
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4111a63ec6a85c744a305e1dfd0869f9, type: 3}
 --- !u!1 &1343594939
 GameObject:
   m_ObjectHideFlags: 0
@@ -5746,3 +5819,4 @@ SceneRoots:
   - {fileID: 1930489873}
   - {fileID: 1343594945}
   - {fileID: 535999472}
+  - {fileID: 1134121161}
