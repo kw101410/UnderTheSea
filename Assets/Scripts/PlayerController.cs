@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         playerCamera = GetComponentInChildren<Camera>(); // 자식에 있는 카메라 찾기
 
+        verticalRotation = 0f;
+        playerCamera.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
+
         // 마우스 커서 숨기고 고정 (ESC 누르면 풀리게 따로 짜야 함)
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
