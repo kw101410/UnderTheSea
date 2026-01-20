@@ -5,113 +5,88 @@ using UnityEngine.UI;
 public class CatastropheTrigger : MonoBehaviour
 {
     [Header("--- [Target Objects] ---")]
-    public Image brokenGlassImage;
+    public Transform monsterRoot;   // 껍데기(ROOT)
+    public GameObject monsterModel; // 괴물 모델
+    public Transform playerCamera;  // 플레이어 카메라
+    public Transform spawnPoint;    // 시작 위치
+
+    [Header("--- [연출 옵션] ---")]
+    public Image brokenGlass;
     public GameObject alarmLight;
     public ParticleSystem waterLeak;
-    public Transform playerCamera;
-
-    [Header("--- [Monster Settings] ---")]
-    public GameObject monster;
-    public Animator monsterAnim;
-    public Transform monsterSpawnPoint;
-
-    [Header("--- [Audio] ---")]
     public AudioSource sfxSource;
-    public AudioSource alarmSource;
     public AudioClip impactSound;
-    public AudioClip monsterScream;
+    public AudioClip screamSound;
 
-    [Header("--- [Settings] ---")]
-    public float impactShake = 1.0f;
-    public float monsterJumpSpeed = 3.0f;
+    [Header("--- [★ 위치 미세조절 (여기만 봐) ★] ---")]
+    [Tooltip("값이 클수록 플레이어보다 멀리(앞에) 멈춤. 뒤로 넘어가면 이 숫자를 키워! (추천: 1.5 ~ 2.0)")]
+    public float stopDistance = 1.5f;
 
-    [Header("--- [★ 각도 교정 (중요) ★] ---")]
-    [Tooltip("괴물이 옆을 보면 90, -90 넣어보셈")]
-    public float rotationOffset = 0f;
+    [Tooltip("값이 클수록 괴물을 바닥으로 내림. 너무 높으면 이 숫자를 키워! (추천: 1.5 ~ 1.8)")]
+    public float heightDown = 1.6f;
 
-    private bool hasTriggered = false;
-    private Vector3 originalCamPos;
+    [Tooltip("괴물 날아오는 속도")]
+    public float speed = 3.0f;
+
+    private bool isTriggered = false;
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && !hasTriggered)
+        if (other.CompareTag("Player") && !isTriggered)
         {
-            hasTriggered = true;
-            originalCamPos = playerCamera.localPosition;
-            StartCoroutine(StartCatastrophe());
+            isTriggered = true;
+            StartCoroutine(ActionSequence());
         }
     }
 
-    // ★ 유니티 LookAt 대신 쓰는 "기울기 방지" 함수
-    void LookAtPlayerOnlyY(Transform obj, Vector3 targetPos)
+    IEnumerator ActionSequence()
     {
-        // 1. 방향 계산
-        Vector3 dir = targetPos - obj.position;
-
-        // 2. Y축(높이) 차이 제거 -> 무조건 수평으로만 보게 함 (X, Z 회전 방지)
-        dir.y = 0;
-
-        // 3. 회전값 계산
-        if (dir != Vector3.zero)
-        {
-            Quaternion targetRot = Quaternion.LookRotation(dir);
-            // 4. 오프셋 적용 (옆으로 서면 이걸로 돌림)
-            obj.rotation = targetRot * Quaternion.Euler(0, rotationOffset, 0);
-        }
-    }
-
-    IEnumerator StartCatastrophe()
-    {
-        // 1. 충돌 & 흔들림
+        // 1. 파국 연출
         if (sfxSource) sfxSource.PlayOneShot(impactSound);
-        if (brokenGlassImage) brokenGlassImage.gameObject.SetActive(true);
-
-        float crashTime = 0f;
-        while (crashTime < 0.5f)
-        {
-            playerCamera.localPosition = originalCamPos + Random.insideUnitSphere * impactShake;
-            crashTime += Time.deltaTime;
-            yield return null;
-        }
-        playerCamera.localPosition = originalCamPos;
-
-        // 2. 경고등 & 물
+        if (brokenGlass) brokenGlass.gameObject.SetActive(true);
         if (alarmLight) alarmLight.SetActive(true);
         if (waterLeak) waterLeak.Play();
-        if (alarmSource) alarmSource.Play();
 
-        // 3. 괴물 등장
         yield return new WaitForSeconds(0.2f);
 
-        monster.transform.position = monsterSpawnPoint.position;
-        monster.SetActive(true);
+        // 2. 괴물 배치 (시작)
+        monsterRoot.position = spawnPoint.position;
+        monsterModel.SetActive(true);
 
-        // [등장 시] 기울기 없이 Y축만 돌려서 쳐다보기
-        LookAtPlayerOnlyY(monster.transform, playerCamera.position);
+        // ★ 쳐다보는 건 Y축만 (기울기 방지)
+        Vector3 lookDir = playerCamera.position - monsterRoot.position;
+        lookDir.y = 0;
+        if (lookDir != Vector3.zero) monsterRoot.rotation = Quaternion.LookRotation(lookDir);
 
-        if (sfxSource && monsterScream) sfxSource.PlayOneShot(monsterScream);
+        if (sfxSource) sfxSource.PlayOneShot(screamSound);
 
-        // 4. 돌진 (플레이어 코앞까지만)
-        float attackTime = 0f;
-        Vector3 startPos = monster.transform.position;
+        // 3. 돌진 계산
+        float timer = 0f;
+        Vector3 startPos = monsterRoot.position;
 
-        // 목표: 카메라 보는 방향 앞 1.2m, 높이 살짝 아래
-        Vector3 endPos = playerCamera.position + (playerCamera.forward * 8f);
-        endPos.y -= 2f;
-
-        while (attackTime < 1.0f)
+        while (timer < 1.0f)
         {
-            attackTime += Time.deltaTime * monsterJumpSpeed;
+            timer += Time.deltaTime * speed;
+
+            // ★ [핵심] 도착 지점 실시간 계산
+            // 카메라가 보는 방향(forward) 수평으로 가져옴
+            Vector3 forwardFlat = playerCamera.forward;
+            forwardFlat.y = 0; // 땅 보거나 하늘 봐도 괴물 위치 안 이상해지게 수평 유지
+            forwardFlat.Normalize();
+
+            // 목표점: 카메라 위치 + (앞으로 stopDistance만큼) + (아래로 heightDown만큼)
+            Vector3 endPos = playerCamera.position + (forwardFlat * stopDistance);
+            endPos.y -= heightDown;
 
             // 이동
-            monster.transform.position = Vector3.Lerp(startPos, endPos, attackTime);
+            monsterRoot.position = Vector3.Lerp(startPos, endPos, timer);
 
-            // [이동 중] 매 프레임 기울기 없이 쳐다보기
-            LookAtPlayerOnlyY(monster.transform, playerCamera.position);
+            // 계속 쳐다보기 (Y축만)
+            lookDir = playerCamera.position - monsterRoot.position;
+            lookDir.y = 0;
+            if (lookDir != Vector3.zero) monsterRoot.rotation = Quaternion.LookRotation(lookDir);
 
             yield return null;
         }
-
-        Debug.Log("연출 끝");
     }
 }
